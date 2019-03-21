@@ -1,14 +1,30 @@
+########
+# PATHS
+########
+
 # is USE_PATHS set? then append it!
 [ -n "${USE_HOME_BIN}" ] && export PATH=$HOME/.local/bin:$HOME/bin:$PATH
+
+###########
+# dotfiles
+###########
 
 # are some links missing and they exist elsewhere? then link them!
 [ ! -L $HOME/.spacemacs ] && [ -f /data/dotfiles/.spacemacs ] && ln -s /data/dotfiles/.spacemacs $HOME/.spacemacs
 [ ! -L $HOME/.vimrc ] && [ -f /data/dotfiles/.vimrc ] && ln -s /data/dotfiles/.vimrc $HOME/.vimrc
 
+########
+# EMACS 
+########
+
 # is USE_EMACS_DAEMON set? then launch it in the background
 [ -n "${USE_EMACS_DAEMON}" ] && pgrep -x emacs >/dev/null || emacs --daemon &> /dev/null &
 # is USE_EMACS_DAEMON set? then set an alias for the client
 [ -n "${USE_EMACS_DAEMON}" ] && alias emacs="emacsclient -c"
+
+######
+# RVM
+######
 
 # is USE_RVM set and RVM command does not exist? then install it!
 if [ -n "${USE_RVM}" ] && [ ! -d $HOME/.rvm ]; then
@@ -20,9 +36,16 @@ fi
 # is USE_RVM set and RVM exists? then try loading it!
 [ -n "$USE_RVM" ] && [ -f $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 
+##########
+# HASKELL
+##########
+
 # is USE_HASKELL set and not installed? then install it!
 [ -n "$USE_HASKELL" ] && [ ! $(command -v "ghc") ] && sudo apt-get install -y haskell-platform
 
+############
+# OH MY ZSH
+############
 # is USE_OMZ set and not installed? then install it!
 [ -n "$USE_OMZ" ] && [ ! -d "$HOME/.oh-my-zsh" ] && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
 # is USE_OMZ set and the file exists? then load it!
@@ -40,8 +63,16 @@ fi
 # load OMZ again...
 [ -n "$USE_OMZ" ] && [ -f "$HOME/.zshrc" ] && source $HOME/.zshrc
 
+###############
+# SRC LOCATION
+###############
+
 # is SRC_DIR defined and does it exist? then link it
 [ -n "${SRC_DIR}" ] && [ -d "${SRC_DIR}" ] && [ ! -L $HOME/src ] && ln -s $SRC_DIR $HOME/src
+
+##########
+# CLOJURE
+##########
 
 # is USE_CLOJURE defined and is it not installed? then install it!
 [ -n "${USE_CLOJURE}" ] && [ ! $(command -v "clojure") ] && \
@@ -55,6 +86,10 @@ fi
 [ -n "${USE_LEIN}" ] && [ ! $(command -v "lein") ] && \
   sudo curl -o /usr/local/bin/lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein && \
   sudo chmod +x /usr/local/bin/lein
+
+###################
+# KUBERNETES TOOLS
+###################
 
 # is USE_KUBECTL set and not installed? install it!
 [ -n "${USE_KUBECTL}" ] && [ ! -f /usr/local/bin/kubectl ] && \
@@ -72,6 +107,10 @@ fi
 [ -n "${USE_AWS_IAM_AUTHENTICATOR}" ] && [ ! -x /usr/local/bin/aws-iam-authenticator ] && \
     cd /usr/local/bin && openssl sha1 -sha256 aws-iam-authenticator && cd - && \
     sudo chmod +x /usr/local/bin/aws-iam-authenticator
+
+########
+# VAULT
+########
 
 # is USE_VAULT set and not installed? install it!
 [ -n "${USE_VAULT}" ] && [ ! $(command -v "vault") ] && \
